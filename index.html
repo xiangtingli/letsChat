@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" ng-app="chatApp">
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="src/chatApp.js"></script>
+    <script src='js/bootstrap.min.js'></script>
+    <link href='css/bootstrap.css' rel='stylesheet'>
+  </head>
+  <body>
+    <div class='container' ng-controller="chatController">
+      <div ng-if="name === null">
+          <form>
+            <input type="text" ng-model="chatNameText" ng-model-instant>
+            <button class='btn btn-primary'ng-click="registerName(chatNameText)"> Register </button>
+          </form>
+      </div>
+      <div ng-if="name !== null">
+        <div ng-if="currentRoomName !== null">
+          <div class='jumbotron'>
+            <ul class="list-unstyled">
+              <li ng-repeat="msg in currentRoomMessageList">
+                <p>{{msg.data}}</p>
+              </li>
+            </ul>
+          </div>
+          <form>
+            <input type="text" ng-model="chatInputText" ng-model-instant>
+            <button class='btn btn-primary' ng-click="sendChatMsg(chatInputText); chatInputText='' "> Send </button>
+          </form>
+          <button class='btn btn-warning' ng-if="!canQuitChat" ng-click="leaveRoom()"> Leave </button>
+          <button class='btn btn-danger' ng-if="canQuitChat" ng-click="quitChat()"> Quit </button>
+        </div>
+        <div ng-if="currentRoomName === null">
+          <ul class="list-unstyled">
+            <li ng-repeat="room in roomList">
+              <div class='jumbotron'>
+                <p><h2><span class="glyphicon glyphicon-home"></span>{{room.name}}</h2></p>
+                <div class='row'>
+                  <div class='col-sm-4'>
+                    <p><h4><span class="glyphicon glyphicon-user"></span>{{room.userCount}}</h4></p>
+                  </div>
+                  <div class='col-sm-4'>
+                    <p><h4><span class="glyphicon glyphicon-user"></span>
+                       <span class="glyphicon glyphicon-user"></span>{{room.capacity}}</h4></p>
+                  </div>
+                  <div class='col-sm-4'>
+                    <button class='btn btn-primary' ng-click="joinRoom(room.name)"> Join </button>
+                  </div>
+              </div>
+              </div>
+            </li>
+          </ul>
+          <form>
+            <input type="text" ng-model="roomNameInputText" ng-model-instant>
+            <button class='btn btn-success' ng-click="createRoom(roomNameInputText)"> Create Room </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
